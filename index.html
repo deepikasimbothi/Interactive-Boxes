@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOGO Sales Page</title>
+    <style>
+        /* Previous styles remain the same */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 28rem;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .space-y-4>*+* {
+            margin-top: 1rem;
+        }
+
+        .title {
+            font-size: 1.5rem;
+            text-align: center;
+            font-weight: 600;
+            color: #ff6a82;
+        }
+
+        .card {
+            background: white;
+            border-radius: 0.1rem;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 300ms;
+            border: 1px solid #e5e7eb;
+            position: relative; /* Added for positioning the popular badge */
+        }
+
+        .card.selected {
+            box-shadow: 0 0 0 2px #ff6a82;
+        }
+
+        .card.popular {
+            border-color: #ff6a82;
+        }
+
+        /* Added new styles for the most popular badge */
+        .most-popular-badge {
+            position: absolute;
+            top: 0;
+            right: 1rem;
+            transform: translateY(-50%);
+            background-color: #ff6a82;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            white-space: nowrap;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .gap-3 {
+            gap: 0.75rem;
+        }
+
+        .gap-4 {
+            gap: 1rem;
+        }
+
+        .radio-circle {
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            border: 2px solid #d1d5db;
+        }
+
+        .radio-circle.selected {
+            border-color: #ff6a82;
+            background-color: #ff6a82;
+        }
+
+        .badge {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            color: white;
+            background-color: #ff6a82;
+            border-radius: 0.25rem;
+        }
+
+        .price {
+            text-align: right;
+        }
+
+        .current-price {
+            font-weight: bold;
+        }
+
+        .original-price {
+            font-size: 0.875rem;
+            color: #6b7280;
+            text-decoration: line-through;
+        }
+
+        .unit-customization {
+            margin-top: 1rem;
+        }
+
+        .unit-number {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        select {
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            border: 1px solid #d1d5db;
+            width: 6rem;
+            background-color: white;
+        }
+
+        .total-section {
+            display: flex;
+            justify-content: space-between;
+            color: #ff6a82;
+        }
+
+        .total-price {
+            font-weight: bold;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #ff6a82;
+            color: white;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .add-to-cart:hover {
+            background-color: #ff6a82;
+        }
+
+        .footer {
+            text-align: right;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+    <div class="container space-y-4">
+        <h1 class="title">YAY! It's BOGO</h1>
+        <div id="units-container" class="space-y-4"></div>
+
+        <div class="total-section">
+            <span>Free Delivery</span>
+            <span class="total-price">Total: $10.00 USD</span>
+        </div>
+
+        <button class="add-to-cart">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5v14M5 12h14" />
+            </svg>
+            Add to Cart
+        </button>
+
+        <div class="footer">
+            @ Powered by Pumper
+        </div>
+    </div>
+
+    <script>
+        const units = [
+            { amount: 1, discount: '10% Off', price: 10.00, originalPrice: 24.00 },
+            { amount: 2, discount: '20% Off', price: 18.00, originalPrice: 24.00, popular: true },
+            { amount: 3, discount: '30% Off', price: 24.00, originalPrice: 24.00 }
+        ];
+
+        let selectedUnit = 1;
+        const sizes = { 1: 'S', 2: 'S' };
+        const colors = { 1: 'Black', 2: 'Black' };
+
+        function createUnitCard(unit) {
+            const isSelected = selectedUnit === unit.amount;
+            return `
+                <div class="card ${isSelected ? 'selected' : ''} ${unit.popular ? 'popular' : ''}" 
+                     data-amount="${unit.amount}">
+                     ${unit.popular ? '<div class="most-popular-badge">MOST POPULAR</div>' : ''}
+                     <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="radio-circle ${isSelected ? 'selected' : ''}"></div>
+                            <span style="font-weight: 500">${unit.amount} Unit</span>
+                            <span class="badge">${unit.discount}</span>
+                        </div>
+                        <div class="price">
+                            <div class="current-price">$${unit.price.toFixed(2)} USD</div>
+                            <div class="original-price">$${unit.originalPrice.toFixed(2)} USD</div>
+                        </div>
+                     </div>
+                     ${unit.amount === 1 ? '<span style="margin-left:25px;">Standard price</span>' : ''}
+                     ${isSelected && unit.amount > 1 ? createUnitCustomization(unit.amount) : ''}
+                </div>
+            `;
+        }
+
+        function createUnitCustomization(amount) {
+            let customization = '<div class="unit-customization space-y-4">';
+            for (let i = 0; i < amount; i++) {
+                customization += `
+                    <div class="flex items-center gap-4">
+                        <span class="unit-number">#${i + 1}</span>
+                        <select class="size-select" data-unit="${i + 1}">
+                            ${['XS', 'S', 'M', 'L', 'XL'].map(size =>
+                    `<option value="${size}" ${sizes[i + 1] === size ? 'selected' : ''}>${size}</option>`
+                ).join('')}
+                        </select>
+                        <select class="color-select" data-unit="${i + 1}">
+                            ${['Black', 'White', 'Gray', 'Navy'].map(color =>
+                    `<option value="${color}" ${colors[i + 1] === color ? 'selected' : ''}>${color}</option>`
+                ).join('')}
+                        </select>
+                    </div>
+                `;
+            }
+            return customization + '</div>';
+        }
+
+        function updateUI() {
+            const container = document.getElementById('units-container');
+            container.innerHTML = units.map(createUnitCard).join('');
+
+            const selectedUnitData = units.find(u => u.amount === selectedUnit);
+            document.querySelector('.total-price').textContent =
+                `Total: $${selectedUnitData.price.toFixed(2)} USD`;
+
+            attachEventListeners();
+        }
+
+        function attachEventListeners() {
+            document.querySelectorAll('.card').forEach(card => {
+                card.addEventListener('click', () => {
+                    selectedUnit = parseInt(card.dataset.amount);
+                    updateUI();
+                });
+            });
+
+            document.querySelectorAll('.size-select').forEach(select => {
+                select.addEventListener('change', (e) => {
+                    const unitNumber = parseInt(e.target.dataset.unit);
+                    sizes[unitNumber] = e.target.value;
+                });
+            });
+
+            document.querySelectorAll('.color-select').forEach(select => {
+                select.addEventListener('change', (e) => {
+                    const unitNumber = parseInt(e.target.dataset.unit);
+                    colors[unitNumber] = e.target.value;
+                });
+            });
+        }
+
+        updateUI();
+    </script>
+</body>
+</html>
